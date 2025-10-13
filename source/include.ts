@@ -8,12 +8,14 @@ import IncludeSettings from './includeSettings'
 // Default settings
 const DEFAULT_COMMONMARK_REGEX: boolean = true
 const DEFAULT_MARKDOWN_IT_REGEX: boolean = true
+const DEFAULT_GITLAB_REGEX: boolean = true
 const DEFAULT_NOT_FOUND_MESSAGE: string = 'File \'{{FILE}}\' not found'
 const DEFAULT_CIRCULAR_MESSAGE: string = 'Circular reference between \'{{FILE}}\' and \'{{PARENT}}\''
 
 // Default regex patterns
 const COMMONMARK_PATTERN: RegExp = /\:(?:\[([^|\]]*)\|?([^\]]*)\])?\(([^)]+)\)/i
 const MARKDOWN_IT_PATTERN: RegExp = /\!{3}\s*include\s*\(\s*(.+?)\s*\)\s*\!{3}/i
+const GITLAB_INCLUDE_PATTERN: RegExp = /^::include\s*\{\s*file\s*=\s*([^\}]+)\s*\}/im
 
 /** Main entry point for markdown-it plugin */
 export = function Include(markdown: MarkdownIt, settings: IncludeSettings) {
@@ -110,6 +112,21 @@ export = function Include(markdown: MarkdownIt, settings: IncludeSettings) {
                 )
             }
         }
+        
+        if (settings.gitlabRegex === undefined ? DEFAULT_GITLAB_REGEX : settings.gitlabRegex) {
+             while ((regexResult = GITLAB_INCLUDE_PATTERN.exec(parentContent))) {
+                 parentContent = replace(
+                     regexResult,
+                     parentContent,
+                     parentFolder,
+                     parentFile,
+                     regexResult[1].trim(),
+                     (settings.notFoundMessage === undefined ? DEFAULT_NOT_FOUND_MESSAGE : settings.notFoundMessage),
+                     (settings.circularMessage === undefined ? DEFAULT_CIRCULAR_MESSAGE : settings.circularMessage),
+                     processedFiles
+                 )
+             }
+         }
 
         // Return include (transclusion) result
         return parentContent
