@@ -4,7 +4,7 @@
   "description": "Support transclusion of files wihin Markdown Preview with gitlab support",
   "version": "0.0.4",
   "engines": {
-    "vscode": "^1.30.0"
+    "vscode": "^1.35.0"
   },
   "main": "index.js",
   "keywords": [
@@ -21,16 +21,16 @@
     "Other"
   ],
   "icon": "logo128.png",
-  "author": "Markus Stamminger",
-  "publisher": "stamminger",
+  "author": "Sergey Latu",
+  "publisher": "sergeydigl3",
   "license": "SEE LICENSE IN LICENSE.txt",
-  "homepage": "https://github.com/SIPS1980/vscode-markdown-preview-include#readme",
+  "homepage": "https://github.com/sergeydigl3/vscode-markdown-preview-include-gitlab#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SIPS1980/vscode-markdown-preview-include.git"
+    "url": "https://github.com/sergeydigl3/vscode-markdown-preview-include-gitlab.git"
   },
   "bugs": {
-    "url": "https://github.com/SIPS1980/vscode-markdown-preview-include/issues"
+    "url": "https://github.com/sergeydigl3/vscode-markdown-preview-include-gitlab/issues"
   },
   "activationEvents": [],
   "contributes": {
