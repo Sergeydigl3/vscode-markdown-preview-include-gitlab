@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 0.1.0 (13.10.2025)
+* *Feature*: Add gitlab support
+
 ## Version 0.0.4 (June 8th, 2019)
 * *Documentation*: [README.md](https://github.com/SIPS1980/vscode-markdown-preview-include/blob/master/README.md) with example images
 

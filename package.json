@@ -1,7 +1,7 @@
 {
-  "name": "vscode-markdown-preview-include",
-  "displayName": "Markdown Preview Include Files",
-  "description": "Support transclusion of files wihin Markdown Preview",
+  "name": "vscode-markdown-preview-include-gitlab",
+  "displayName": "Markdown Preview Include Files (Gitlab support)",
+  "description": "Support transclusion of files wihin Markdown Preview with gitlab support",
   "version": "0.0.4",
   "engines": {
     "vscode": "^1.30.0"
