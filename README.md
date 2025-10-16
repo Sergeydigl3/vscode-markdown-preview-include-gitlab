@@ -9,11 +9,13 @@ Visual Studio Code Extension for the built-in Markdown Preview to support transc
 
 ---
 
-The following 2 syntaxes are supported and can be used at anytime
+The following 3 syntaxes are supported and can be used at anytime
 
 > **`:(file.md)`**
 
 > **`!!!include(file.md)!!!`**
+
+> **`::include{file=file.md}`**
 
 * Output when referenced file is not found: *`File 'pathToFile/file.md' not found`*
 * Output for circular reference: *`Circular reference between 'pathToFile/file.md' and 'pathToParentFile/partent.md'`*

@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 0.1.1 (16.10.2025)
+* *Enhancement*: Fix versions and update readme
+
 ## Version 0.1.0 (13.10.2025)
 * *Feature*: Add gitlab support
 
