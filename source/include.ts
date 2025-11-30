@@ -25,7 +25,7 @@ export = function Include(markdown: MarkdownIt, settings: IncludeSettings) {
         settings = { }
     }
 
-    /** Replace include mark in parent content with assemblied child content */
+    /** Replace include mark in parent content with assembled child content */
     function replace(
         regexResult: RegExpExecArray,
         parentContent: string,
@@ -50,6 +50,11 @@ export = function Include(markdown: MarkdownIt, settings: IncludeSettings) {
         } else {
             // Get child file content and process it
             childContent = fs.readFileSync(childFile, 'utf8')
+            
+            // Wrap content with HTML comments to track source file
+            const childFolder = path.dirname(childFile)
+            childContent = `<!-- include-source-start: ${childFolder} -->\n${childContent}\n<!-- include-source-end -->`
+            
             childContent = execute(childContent, childFile, processedFiles);
         }
 
@@ -61,7 +66,7 @@ export = function Include(markdown: MarkdownIt, settings: IncludeSettings) {
 
     /** Execute including of child files (execute the transclusion) */
     function execute(parentContent: string, parentFile: string, processedFiles?: String[]): string {
-        // Prepare checking for circulare references
+        // Prepare checking for circular references
         processedFiles = processedFiles === undefined ? [] : processedFiles.slice()
         if (parentFile !== undefined) {
             processedFiles.push(parentFile)
@@ -146,10 +151,90 @@ export = function Include(markdown: MarkdownIt, settings: IncludeSettings) {
             return
         }
 
+        // Store current file path for renderers
+        currentFilePath = file
+
         // Execute transclusion
         state.src = execute(state.src, file)
     }
 
-    // Add plugin to markdown-it parser instance
+    // Track source folder stack for nested includes
+    const sourceFolderStack: string[] = []
+
+    // Store current file path for renderers
+    let currentFilePath: string | undefined
+
+    /** Helper function to resolve path relative to source folder */
+    function resolvePathFromSource(
+        attrValue: string | null,
+        currentSourceFolder: string | null
+    ): string | null {
+        if (!attrValue || !currentSourceFolder || !currentFilePath) {
+            return null
+        }
+
+        // Skip absolute paths, URLs with protocol, and anchor links
+        if (path.isAbsolute(attrValue) || /^[a-z][a-z0-9+.-]*:/i.test(attrValue) || attrValue.startsWith('#')) {
+            return null
+        }
+
+        const currentFileDir = path.dirname(currentFilePath)
+        const absolutePath = path.resolve(currentSourceFolder, attrValue)
+        return path.relative(currentFileDir, absolutePath)
+    }
+
+
+    const defaultImageRenderer = markdown.renderer.rules.image || 
+        ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+    
+    const defaultLinkOpenRenderer = markdown.renderer.rules.link_open ||
+        ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+
+    // Override html_block to capture include-source comments
+    const defaultHtmlBlockRenderer = markdown.renderer.rules.html_block ||
+        ((tokens, idx, _options, _env, _self) => tokens[idx].content)
+    
+    markdown.renderer.rules.html_block = (tokens, idx, options, env, self) => {
+        const content = tokens[idx].content
+        const startMatch = content.match(/<!-- include-source-start: (.+?) -->/)
+        const endMatch = content.match(/<!-- include-source-end -->/)
+        
+        if (startMatch) {
+            sourceFolderStack.push(startMatch[1])
+            return '' // Hide comment
+        } else if (endMatch) {
+            sourceFolderStack.pop()
+            return '' // Hide comment
+        }
+        
+        return defaultHtmlBlockRenderer(tokens, idx, options, env, self)
+    }
+
+
+    markdown.renderer.rules.image = (tokens, idx, options, env, self) => {
+        const srcAttr = tokens[idx].attrGet('src')
+        const currentSourceFolder = sourceFolderStack.length > 0 ? sourceFolderStack[sourceFolderStack.length - 1] : null
+        
+        const resolvedPath = resolvePathFromSource(srcAttr, currentSourceFolder)
+        if (resolvedPath) {
+            tokens[idx].attrSet('src', resolvedPath)
+        }
+        
+        return defaultImageRenderer(tokens, idx, options, env, self)
+    }
+
+
+    markdown.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+        const hrefAttr = tokens[idx].attrGet('href')
+        const currentSourceFolder = sourceFolderStack.length > 0 ? sourceFolderStack[sourceFolderStack.length - 1] : null
+        
+        const resolvedPath = resolvePathFromSource(hrefAttr, currentSourceFolder)
+        if (resolvedPath) {
+            tokens[idx].attrSet('href', resolvedPath)
+        }
+        
+        return defaultLinkOpenRenderer(tokens, idx, options, env, self)
+    }
+
     markdown.core.ruler.before('normalize', 'include', trigger)
 }

@@ -184,6 +184,6 @@ This will produce the following output
 ## **Credits**
 
 This Visual Studio Code Extension was inspired by
-
+* [**VSCode-Markdown-Preview**](https://github.com/SIPS1980/vscode-markdown-preview-include)
 * [**Markdown-It-Include**](https://github.com/camelaissani/markdown-it-include) plugin for [Markdown-It](https://github.com/markdown-it/markdown-it)
 * [**Transclusion conversation**](https://talk.commonmark.org/t/transclusion-or-including-sub-documents-for-reuse/270) in [CommonMark.org](https://commonmark.org/) forum

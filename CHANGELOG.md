@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 0.2.0 (30.11.2025)
+* *Enhancement*: Fix image path and local url resolving
+
 ## Version 0.1.1 (16.10.2025)
 * *Enhancement*: Fix versions and update readme
 
