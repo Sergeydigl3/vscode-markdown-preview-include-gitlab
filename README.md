@@ -1,189 +1,272 @@
-# Support transclusion of files within Markdown Preview
+<div align="center">
 
-<!-- [![Version](https://vsmarketplacebadge.apphb.com/version/stamminger.vscode-markdown-preview-include.svg)](https://marketplace.visualstudio.com/items?itemName=stamminger.vscode-markdown-preview-include)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs/stamminger.vscode-markdown-preview-include.svg)](https://marketplace.visualstudio.com/items?itemName=stamminger.vscode-markdown-preview-include)
-[![Downloads](https://vsmarketplacebadge.apphb.com/downloads/stamminger.vscode-markdown-preview-include.svg)](https://marketplace.visualstudio.com/items?itemName=stamminger.vscode-markdown-preview-include)
-[![Rating](https://vsmarketplacebadge.apphb.com/rating-short/stamminger.vscode-markdown-preview-include.png)](https://marketplace.visualstudio.com/items?itemName=stamminger.vscode-markdown-preview-include) -->
+<img src="icon.png" alt="Markdown Transclusion" width="128" />
 
-Visual Studio Code Extension for the built-in Markdown Preview to support transculsion of further files.
+<br/>
 
----
+# Markdown Preview Transclusion
 
-The following 3 syntaxes are supported and can be used at anytime
+#### Seamlessly include external files in your Markdown Preview
 
-> **`:(file.md)`**
+<br/>
 
-> **`!!!include(file.md)!!!`**
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/sergeydigl3.vscode-markdown-preview-include-gitlab?label=Marketplace&logo=visual-studio-code&logoColor=white&color=007ACC)](https://marketplace.visualstudio.com/items?itemName=sergeydigl3.vscode-markdown-preview-include-gitlab)
+&nbsp;
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/sergeydigl3.vscode-markdown-preview-include-gitlab?label=Installs&color=007ACC)](https://marketplace.visualstudio.com/items?itemName=sergeydigl3.vscode-markdown-preview-include-gitlab)
+&nbsp;
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-> **`::include{file=file.md}`**
+<br/>
 
-* Output when referenced file is not found: *`File 'pathToFile/file.md' not found`*
-* Output for circular reference: *`Circular reference between 'pathToFile/file.md' and 'pathToParentFile/partent.md'`*
+A Visual Studio Code extension that extends the built-in Markdown Preview<br/>with the ability to **transclude content from other files** —<br/>keeping your documentation modular, maintainable, and DRY.
 
----
+<br/>
 
-**Content**
-
-- [**Examples**](#examples)
-  - [Example for syntax based on proposal for CommonMark.org](#example-for-syntax-based-on-proposal-for-commonmarkorg)
-  - [Example for syntax from Markdown-It-Include plugin](#example-for-syntax-from-markdown-it-include-plugin)
-- [**Options**](#options)
-  - [Provide alternative text when file cannot be found](#provide-alternative-text-when-file-cannot-be-found)
-  - [Provide alternative text for circular reference](#provide-alternative-text-for-circular-reference)
-  - [Omit output if file cannot be found or if there is a circular reference](#omit-output-if-file-cannot-be-found-or-if-there-is-a-circular-reference)
-- [**Use Cases**](#use-cases)
-  - [Include copyright on multiple markdown files](#include-copyright-on-multiple-markdown-files)
-  - [Include file containing important links and reference them](#include-file-containing-important-links-and-reference-them)
-  - [Multiple editors working on a large document](#multiple-editors-working-on-a-large-document)
-- [**Credits**](#credits)
+[Get Started](#-quick-start) · [Syntax](#-syntax-in-action) · [Options](#-options) · [Use Cases](#-use-cases)
 
 ---
 
-## **Examples**
+</div>
 
-### Example for syntax based on proposal for CommonMark.org
+<br/>
 
-![`:(file.md)`](examples/syntaxCommonMarkProposal.png)
+## ⚡ Quick Start
 
-### Example for syntax from Markdown-It-Include plugin
+Drop any of these syntaxes into your `.md` file and open **Markdown Preview**:
 
-![`:(file.md)`](examples/syntaxMarkdownItImplementation.png)
+```text
+:(chapter.md)                     ← CommonMark proposal
+!!!include(chapter.md)!!!         ← Markdown-It-Include style
+::include{file=chapter.md}        ← Directive-based
+```
 
----
+The referenced file's content appears inline in the preview. That's it.
 
-## **Options**
+<br/>
 
-### Provide alternative text when file cannot be found
+## 🔍 How It Works
 
-> **`:[Alternative Text](file.md)`**
+| Scenario | Preview output |
+|:--|:--|
+| ✅ &ensp;File found | Content rendered inline |
+| ❌ &ensp;File not found | `File 'path/file.md' not found` |
+| 🔄 &ensp;Circular reference | `Circular reference between 'child.md' and 'parent.md'` |
 
-* To include file name in output use: *`{{FILE}}`*\
-  E.g. **`:[Alternative Text for {{FILE}}](file.md)`**
+> Both error messages are fully customizable — see **[Options](#-options)** below.
 
-![`:(file.md)`](examples/syntaxNotFound.png)
+<br/>
 
+## 📸 Syntax in Action
 
-### Provide alternative text for circular reference
+<table>
+<tr>
+<td width="50%">
 
-> **`:[|Alternative Text](file.md)`**
+**CommonMark-style**
 
-* To include file name in parent: *`{{PARENT}}`*\
-  E.g. **`:[|Alternative Circular Text with {{PARENT}}](file.md)`**
+![CommonMark-style syntax demo](examples/syntaxCommonMarkProposal.png)
 
-* To include file name in child use: *`{{FILE}}`*\
-  E.g. **`:[|Alternative Circular Text with {{FILE}}](file.md)`**
+</td>
+<td width="50%">
 
-![`:(file.md)`](examples/syntaxCircularAlternative.png)
+**Markdown-It-Include-style**
 
-### Omit output if file cannot be found or if there is a circular reference
+![Markdown-It-Include-style syntax demo](examples/syntaxMarkdownItImplementation.png)
 
-> **`:[](file.md)`**
+</td>
+</tr>
+</table>
 
-![`:(file.md)`](examples/syntaxOmitOutput.png)
+<br/>
 
----
+## 🛠 Options
 
-## **Use Cases**
+<table><tr><td>
+<br/>
 
-### Include copyright on multiple markdown files
+**Custom "file not found" message**
 
-Content of file `copyright.md` with copyright notice in includes folder
+```
+:[Your custom message](missing-file.md)
+```
+
+Use `{{FILE}}` to insert the filename dynamically:
+
+```
+:[⚠ Could not locate {{FILE}}](missing-file.md)
+```
+
+<img src="examples/syntaxNotFound.png" alt="File not found demo" />
+
+<br/>
+</td></tr></table>
+
+<table><tr><td>
+<br/>
+
+**Custom "circular reference" message**
+
+```
+:[|Your circular-ref message](file.md)
+```
+
+Placeholders: `{{PARENT}}` — parent file &ensp;·&ensp; `{{FILE}}` — child file
+
+```
+:[|🔄 Loop detected: {{FILE}} ↔ {{PARENT}}](file.md)
+```
+
+<img src="examples/syntaxCircularAlternative.png" alt="Circular reference demo" />
+
+<br/>
+</td></tr></table>
+
+<table><tr><td>
+<br/>
+
+**Suppress all error output**
+
+Pass an empty label to silently skip missing or circular files:
+
+```
+:[](file.md)
+```
+
+<img src="examples/syntaxOmitOutput.png" alt="Omit output demo" />
+
+<br/>
+</td></tr></table>
+
+<br/>
+
+## 💡 Use Cases
+
+<details>
+<summary>&ensp;📄&ensp;<strong>Reusable copyright footer</strong></summary>
+
+<br/>
+
+Create `includes/copyright.md`:
 
 ```markdown
 Copyright &copy; 2019 Company Name - All rights reserved
 ```
 
-Files referencing `copyright.md` in includes folder
+Reference it in any document:
 
 ```markdown
 Text with information
 
-:[Copyright Notice][includes/copyright.md]
+:[Copyright Notice](includes/copyright.md)
 ```
 
-This will produce the following output
+**Result →**
 
 > Text with information
 >
-> Copyright &copy; 2019 Company Name - All rights reserved
+> Copyright © 2019 Company Name — All rights reserved
 
-### Include file containing important links and reference them
+<br/>
 
-Content of file `links.md` with multiple links defined in includes folder
+</details>
+
+<details>
+<summary>&ensp;🔗&ensp;<strong>Shared link definitions</strong></summary>
+
+<br/>
+
+Create `includes/links.md`:
 
 ```markdown
 [GITHUB]: https://github.com
 [VSMARKETPLACE]: https://marketplace.visualstudio.com
 ```
 
-Include `links.md` in the top of the file where links shall be referenced and use them in the content
+Include at the top of your document, then use references anywhere:
 
 ```markdown
-:[includes/links.md]
+:(includes/links.md)
 
-This is a link to [Github][GITHUB]
+Check out the project on [Github][GITHUB].
 ```
 
-This will produce the following output
+**Result →**
 
-> This is a link to <a href="https://github.com">Github</a>
+> Check out the project on [Github](https://github.com)
 
-### Multiple editors working on a large document
+<br/>
 
-Splitting up the document, for example into chapters, provides the possibility for multiple editors working sections of the document. One master document can then include the individual sections for final render.
+</details>
 
-Example content of file `chapter1.md`
+<details>
+<summary>&ensp;👥&ensp;<strong>Multi-author large documents</strong></summary>
 
+<br/>
+
+Split a document into chapters so multiple editors can work in parallel, then assemble in one master file:
+
+`chapter1.md`
 ```markdown
 ## Chapter 1
-
 Text for Chapter 1
 ```
 
-Example content of file `chapter2.md`
-
+`chapter2.md`
 ```markdown
 ## Chapter 2
-
 Text for Chapter 2 including a link to [Github][GITHUB]
 ```
 
-Bringing it all together
-
+`master.md`
 ```markdown
 # Document Title
-:[includes/links.md]
+:(includes/links.md)
 
-:[Chapter 1](chapter1.md)
+:(chapter1.md)
 
-:[Chapter 2](chapter2.md)
+:(chapter2.md)
 
 ---
 
-:[Copyright Notice][includes/copyright.md]
+:[Copyright Notice](includes/copyright.md)
 ```
 
-This will produce the following output
+**Result →**
 
 > # Document Title
 >
 > ## Chapter 1
->
 > Text for Chapter 1
 >
 > ## Chapter 2
->
-> Text for Chapter 2 including a link to <a href="https://github.com">Github</a>
+> Text for Chapter 2 including a link to [Github](https://github.com)
 >
 > ---
 >
-> Copyright &copy; 2019 Company Name - All rights reserved
+> Copyright © 2019 Company Name — All rights reserved
+
+<br/>
+
+</details>
+
+<br/>
+
+## 🙏 Credits & Inspiration
+
+This extension stands on the shoulders of:
+
+| | Project | Description |
+|:--|:--|:--|
+| 🔧 | [**VSCode-Markdown-Preview**](https://github.com/SIPS1980/vscode-markdown-preview-include) | The original VS Code implementation |
+| 📦 | [**Markdown-It-Include**](https://github.com/camelaissani/markdown-it-include) | Plugin for [Markdown-It](https://github.com/markdown-it/markdown-it) |
+| 💬 | [**Transclusion discussion**](https://talk.commonmark.org/t/transclusion-or-including-sub-documents-for-reuse/270) | Thread on the [CommonMark](https://commonmark.org/) forum |
+
+<br/>
+
+<div align="center">
 
 ---
 
-## **Credits**
+Made with ❤️ for the Markdown community
 
-This Visual Studio Code Extension was inspired by
-* [**VSCode-Markdown-Preview**](https://github.com/SIPS1980/vscode-markdown-preview-include)
-* [**Markdown-It-Include**](https://github.com/camelaissani/markdown-it-include) plugin for [Markdown-It](https://github.com/markdown-it/markdown-it)
-* [**Transclusion conversation**](https://talk.commonmark.org/t/transclusion-or-including-sub-documents-for-reuse/270) in [CommonMark.org](https://commonmark.org/) forum
+</div>

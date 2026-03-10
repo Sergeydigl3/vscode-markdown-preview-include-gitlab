@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 0.2.1 (10.03.2026)
+* *Enhancement*: Update extension image and repo description 
+
 ## Version 0.2.0 (30.11.2025)
 * *Enhancement*: Fix image path and local url resolving
 
