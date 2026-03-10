@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 0.2.2 (10.03.2026)
+* *Fix*: Update description icon path
+
 ## Version 0.2.1 (10.03.2026)
 * *Enhancement*: Update extension image and repo description 
 

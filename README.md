@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="icon.png" alt="Markdown Transclusion" width="128" />
+<img src="logo128.png" alt="Markdown Transclusion" width="128" />
 
 <br/>
 
